@@ -5,7 +5,7 @@ var middlewareObj = {};
 
 middlewareObj.checkCampgroundOwnership = function(req, res, next){
 	if(req.isAuthenticated()){
-		Campground.findById(req.params.id, (err, campground) => {
+		Campground.findById(req.params.id, function(err, campground){
 			if(err){
 				console.log(err);
 				req.flash("error", "Something went wrong");
@@ -27,7 +27,7 @@ middlewareObj.checkCampgroundOwnership = function(req, res, next){
 
 middlewareObj.checkCommentOwnership = function(req, res, next){
 	if(req.isAuthenticated()){
-		Comment.findById(req.params.comment_id, (err, comment) => {
+		Comment.findById(req.params.comment_id, function(err, comment){
 			if(err){
 				console.log(err);
 				res.redirect("back");

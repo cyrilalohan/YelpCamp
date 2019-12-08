@@ -4,8 +4,9 @@ var Campground = require("../models/campground");
 var Comment = require("../models/comment");
 var middleware = require("../middleware");
 
-router.get("/", (req, res) => {
-	Campground.find({}, (err, campgrounds) => {
+//INDEX
+router.get("/", function(req, res){
+	Campground.find({}, function(err, campgrounds){
 		if(err){
 			console.log(err);
 		} else {
@@ -14,11 +15,13 @@ router.get("/", (req, res) => {
 	});
 });
 
-router.get("/new", middleware.isLoggedIn, (req, res) => {
+//NEW 
+router.get("/new", middleware.isLoggedIn, function(req, res){
 	res.render("campgrounds/new");
 });
 
-router.post("/", middleware.isLoggedIn, (req, res) => {
+//CREATE
+router.post("/", middleware.isLoggedIn, function(req, res){
 	var name = req.body.name;
 	var image = req.body.image;
 	var desc = req.body.description;
@@ -28,7 +31,7 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
 		username: req.user.username
 	};
 	var newCampground = {name: name, image: image, description: desc, price: price, author: author};
-	Campground.create(newCampground, (err, campground) => {
+	Campground.create(newCampground, function(err, campground){
 		if(err){
 			console.log(err)
 		} else {
@@ -38,8 +41,9 @@ router.post("/", middleware.isLoggedIn, (req, res) => {
 	});
 });
 
-router.get("/:id", (req, res) => {
-	Campground.findById(req.params.id).populate("comments").exec((err, campground) => {
+//SHOW
+router.get("/:id", function(req, res){
+	Campground.findById(req.params.id).populate("comments").exec(function(err, campground){
 		if(err){
 			console.log(err);
 			req.flash("error", "Something went wrong");
@@ -51,9 +55,9 @@ router.get("/:id", (req, res) => {
 });
 
 
-
-router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
-	Campground.findById(req.params.id, (err, campground) => {
+//EDIT
+router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res){
+	Campground.findById(req.params.id, function(err, campground){
 		if(err){
 			console.log(err);
 		} else {
@@ -62,8 +66,9 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, (req, res) => {
 	});
 });
 
-router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
-	Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, campground) => {
+//UPDATE
+router.put("/:id", middleware.checkCampgroundOwnership, function(req, res){
+	Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, campground){
 		if(err){
 			req.flash("error", "Something went wrong");
 			res.redirect("/campgrounds/" + req.params.id + "edit");
@@ -74,8 +79,9 @@ router.put("/:id", middleware.checkCampgroundOwnership, (req, res) => {
 	});
 });
 
-router.delete("/:id", middleware.checkCampgroundOwnership, (req, res) => {
-	Campground.findByIdAndRemove(req.params.id, err => {
+//DESTROY
+router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res){
+	Campground.findByIdAndRemove(req.params.id, function(err){
 		if(err){
 			res.redirect("/campgrounds");
 		} else {
